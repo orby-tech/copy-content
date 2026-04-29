@@ -17,6 +17,10 @@
   "btnPickText": { "message": "टेक्स्ट चुनें" },
   "btnPickMd": { "message": "मार्कडाउन चुनें" },
   "btnSupport": { "message": "सहायता" },
+  "menuCopyText": { "message": "Copy Content: टेक्स्ट कॉपी करें" },
+  "menuCopyMd": { "message": "Copy Content: मार्कडाउन कॉपी करें" },
+  "menuPickText": { "message": "Copy Content: टेक्स्ट चुनें" },
+  "menuPickMd": { "message": "Copy Content: मार्कडाउन चुनें" },
   "statusTextCopied": {
     "message": "टेक्स्ट कॉपी हुआ · $CHARS$",
     "placeholders": { "chars": { "content": "$1", "example": "5.4k अक्षर" } }

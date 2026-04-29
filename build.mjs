@@ -1,12 +1,33 @@
-import { cpSync, mkdirSync, rmSync } from 'fs';
+import { cpSync, mkdirSync, rmSync, readFileSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 
-mkdirSync('dist', { recursive: true });
-cpSync('icons', 'dist/icons', { recursive: true });
-cpSync('_locales', 'dist/_locales', { recursive: true });
-cpSync('manifest.json', 'dist/manifest.json');
-cpSync('popup.html', 'dist/popup.html');
-cpSync('popup.js', 'dist/popup.js');
+// Chrome MV3 only accepts background.service_worker.
+// Firefox MV3 has service workers disabled by default and expects background.scripts.
+// We keep one canonical manifest.json (Chrome-flavoured) and rewrite it for Firefox at build time.
 
-rmSync('copy-content.zip', { force: true });
-execSync('cd dist && zip -r ../copy-content.zip .', { stdio: 'inherit' });
+function buildFor(target) {
+  const dir = `dist-${target}`;
+  const zip = `copy-content-${target}.zip`;
+
+  rmSync(dir, { recursive: true, force: true });
+  mkdirSync(dir, { recursive: true });
+
+  cpSync('icons', `${dir}/icons`, { recursive: true });
+  cpSync('_locales', `${dir}/_locales`, { recursive: true });
+  cpSync('popup.html', `${dir}/popup.html`);
+  cpSync('popup.js', `${dir}/popup.js`);
+  cpSync('extractors.js', `${dir}/extractors.js`);
+  cpSync('background.js', `${dir}/background.js`);
+
+  const manifest = JSON.parse(readFileSync('manifest.json', 'utf8'));
+  if (target === 'firefox') {
+    manifest.background = { scripts: ['extractors.js', 'background.js'] };
+  }
+  writeFileSync(`${dir}/manifest.json`, JSON.stringify(manifest, null, 2));
+
+  rmSync(zip, { force: true });
+  execSync(`cd ${dir} && zip -r ../${zip} .`, { stdio: 'inherit' });
+}
+
+buildFor('chrome');
+buildFor('firefox');

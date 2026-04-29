@@ -1,2 +1,6 @@
 copy-content.zip
+copy-content-chrome.zip
+copy-content-firefox.zip
 dist/
+dist-chrome/
+dist-firefox/

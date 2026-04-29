@@ -1,9 +1,17 @@
 {
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "__MSG_appDescription__",
   "default_locale": "en",
+  "author": "Timur Bondarenko",
+  "homepage_url": "https://bzic-tools.com/extensions/copy-content",
+  "minimum_chrome_version": "116",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_title": "__MSG_appName__",
@@ -13,11 +21,14 @@
       "128": "icons/icon128.png"
     }
   },
-  "permissions": ["activeTab", "scripting", "clipboardWrite"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["activeTab", "scripting", "clipboardWrite", "contextMenus"],
   "browser_specific_settings": {
     "gecko": {
       "id": "copy-content@orby-tech.space",
-      "strict_min_version": "115.0",
+      "strict_min_version": "121.0",
       "data_collection_permissions": {
         "required": ["none"]
       }

@@ -17,6 +17,10 @@
   "btnPickText": { "message": "Elegir texto" },
   "btnPickMd": { "message": "Elegir Markdown" },
   "btnSupport": { "message": "Soporte" },
+  "menuCopyText": { "message": "Copy Content: Copiar texto" },
+  "menuCopyMd": { "message": "Copy Content: Copiar Markdown" },
+  "menuPickText": { "message": "Copy Content: Elegir texto" },
+  "menuPickMd": { "message": "Copy Content: Elegir Markdown" },
   "statusTextCopied": {
     "message": "Texto copiado · $CHARS$",
     "placeholders": { "chars": { "content": "$1", "example": "5.4k car." } }

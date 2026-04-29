@@ -17,6 +17,10 @@
   "btnPickText": { "message": "Выбрать текст" },
   "btnPickMd": { "message": "Выбрать Markdown" },
   "btnSupport": { "message": "Поддержка" },
+  "menuCopyText": { "message": "Copy Content: Копировать текст" },
+  "menuCopyMd": { "message": "Copy Content: Копировать Markdown" },
+  "menuPickText": { "message": "Copy Content: Выбрать текст" },
+  "menuPickMd": { "message": "Copy Content: Выбрать Markdown" },
   "statusTextCopied": {
     "message": "Текст скопирован · $CHARS$",
     "placeholders": { "chars": { "content": "$1", "example": "5.4k симв." } }
