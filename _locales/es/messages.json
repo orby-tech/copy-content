@@ -4,7 +4,7 @@
     "description": "Extension name."
   },
   "appDescription": {
-    "message": "Extrae el contenido principal de una página (main, article, content) y omite la navegación, las barras laterales y los banners. Cuatro botones: «Copiar texto» y «Copiar Markdown» copian todo el artículo; «Elegir texto» y «Elegir Markdown» te permiten pasar el cursor sobre cualquier elemento y copiar solo esa parte. La salida en Markdown conserva encabezados, negrita, cursiva, enlaces, listas, tablas y bloques de código. No se envía ningún dato a ninguna parte: todo se ejecuta localmente al hacer clic.",
+    "message": "Copia el contenido principal como texto o Markdown. Elige cualquier elemento para copiar solo eso. Todo se ejecuta localmente.",
     "description": "Extension store description."
   },
   "loading": { "message": "Cargando…" },
