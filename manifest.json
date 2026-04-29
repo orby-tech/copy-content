@@ -12,5 +12,14 @@
       "128": "icons/icon128.png"
     }
   },
-  "permissions": ["activeTab", "scripting", "clipboardWrite"]
+  "permissions": ["activeTab", "scripting", "clipboardWrite"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "copy-content@orby-tech.space",
+      "strict_min_version": "115.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
 }

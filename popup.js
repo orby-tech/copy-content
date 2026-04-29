@@ -516,24 +516,56 @@ function pickElementContent(format) {
 // ── Markdown renderer ────────────────────────────────────────────────────────
 
 function renderMarkdown(md) {
-  function esc(s) {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const INLINE_PATTERNS = [
+    { re: /`([^`\n]+)`/, tag: 'code' },
+    { re: /\*\*([^*\n]+)\*\*/, tag: 'strong' },
+    { re: /__([^_\n]+)__/, tag: 'strong' },
+    { re: /\*([^*\n]+)\*/, tag: 'em' },
+    { re: /_([^_\n]+)_/, tag: 'em' },
+    { re: /~~([^~\n]+)~~/, tag: 'del' },
+    { re: /!\[([^\]]*)\]\((https?:[^)]+)\)/, kind: 'img' },
+    { re: /\[([^\]]+)\]\((https?:[^)]+)\)/, kind: 'link' },
+  ];
+
+  function appendInline(parent, s) {
+    while (s.length > 0) {
+      let earliest = null;
+      for (const p of INLINE_PATTERNS) {
+        const m = p.re.exec(s);
+        if (m && (earliest === null || m.index < earliest.match.index)) {
+          earliest = { match: m, pattern: p };
+        }
+      }
+      if (!earliest) {
+        parent.appendChild(document.createTextNode(s));
+        return;
+      }
+      const { match, pattern } = earliest;
+      if (match.index > 0) parent.appendChild(document.createTextNode(s.slice(0, match.index)));
+
+      if (pattern.kind === 'img') {
+        const img = document.createElement('img');
+        img.src = match[2];
+        img.alt = match[1];
+        parent.appendChild(img);
+      } else if (pattern.kind === 'link') {
+        const a = document.createElement('a');
+        a.href = match[2];
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = match[1];
+        parent.appendChild(a);
+      } else {
+        const el = document.createElement(pattern.tag);
+        el.textContent = match[1];
+        parent.appendChild(el);
+      }
+      s = s.slice(match.index + match[0].length);
+    }
   }
 
-  function inline(s) {
-    return s
-      .replace(/`([^`\n]+)`/g, '<code>$1</code>')
-      .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/__([^_\n]+)__/g, '<strong>$1</strong>')
-      .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
-      .replace(/_([^_\n]+)_/g, '<em>$1</em>')
-      .replace(/~~([^~\n]+)~~/g, '<del>$1</del>')
-      .replace(/!\[([^\]]*)\]\((https?:[^)]+)\)/g, '<img src="$2" alt="$1">')
-      .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-  }
-
+  const frag = document.createDocumentFragment();
   const lines = md.split('\n');
-  const out = [];
   let i = 0;
 
   while (i < lines.length) {
@@ -543,54 +575,70 @@ function renderMarkdown(md) {
       const code = [];
       i++;
       while (i < lines.length && !/^```/.test(lines[i])) code.push(lines[i++]);
-      out.push(`<pre><code>${esc(code.join('\n'))}</code></pre>`);
+      const pre = document.createElement('pre');
+      const codeEl = document.createElement('code');
+      codeEl.textContent = code.join('\n');
+      pre.appendChild(codeEl);
+      frag.appendChild(pre);
       i++;
       continue;
     }
 
     const hm = line.match(/^(#{1,6}) (.+)/);
     if (hm) {
-      const lvl = hm[1].length;
-      out.push(`<h${lvl}>${inline(esc(hm[2].trim()))}</h${lvl}>`);
+      const h = document.createElement(`h${hm[1].length}`);
+      appendInline(h, hm[2].trim());
+      frag.appendChild(h);
       i++; continue;
     }
 
-    if (/^---+\s*$/.test(line)) { out.push('<hr>'); i++; continue; }
+    if (/^---+\s*$/.test(line)) {
+      frag.appendChild(document.createElement('hr'));
+      i++; continue;
+    }
 
-    if (/^> ?/.test(line) && line.startsWith('>')) {
+    if (line.startsWith('>')) {
       const bq = [];
       while (i < lines.length && lines[i].startsWith('>')) bq.push(lines[i++].replace(/^> ?/, ''));
-      out.push(`<blockquote>${inline(esc(bq.join(' ')))}</blockquote>`);
+      const el = document.createElement('blockquote');
+      appendInline(el, bq.join(' '));
+      frag.appendChild(el);
       continue;
     }
 
     if (/^[ \t]*[-*] /.test(line)) {
-      out.push('<ul>');
+      const ul = document.createElement('ul');
       while (i < lines.length && /^[ \t]*[-*] /.test(lines[i])) {
         const m = lines[i++].match(/^[ \t]*[-*] (.*)/);
-        out.push(`<li>${inline(esc(m[1]))}</li>`);
+        const li = document.createElement('li');
+        appendInline(li, m[1]);
+        ul.appendChild(li);
       }
-      out.push('</ul>');
+      frag.appendChild(ul);
       continue;
     }
 
     if (/^\d+\. /.test(line)) {
-      out.push('<ol>');
+      const ol = document.createElement('ol');
       while (i < lines.length && /^\d+\. /.test(lines[i])) {
         const m = lines[i++].match(/^\d+\. (.*)/);
-        out.push(`<li>${inline(esc(m[1]))}</li>`);
+        const li = document.createElement('li');
+        appendInline(li, m[1]);
+        ol.appendChild(li);
       }
-      out.push('</ol>');
+      frag.appendChild(ol);
       continue;
     }
 
     if (line.trim() === '') { i++; continue; }
 
-    out.push(`<p>${inline(esc(line))}</p>`);
+    const p = document.createElement('p');
+    appendInline(p, line);
+    frag.appendChild(p);
     i++;
   }
 
-  return out.join('');
+  return frag;
 }
 
 // ── Popup logic ───────────────────────────────────────────────────────────────
@@ -647,9 +695,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const title = document.getElementById('page-title');
 
   function setPreview(text, isMarkdown = true) {
-    if (!text) { preview.innerHTML = ''; return; }
+    if (!text) { preview.replaceChildren(); return; }
     if (isMarkdown) {
-      preview.innerHTML = renderMarkdown(text);
+      preview.replaceChildren(renderMarkdown(text));
     } else {
       preview.textContent = text;
     }
@@ -672,7 +720,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setPreview(md, true);
     updateCharCount(md);
   } catch (e) {
-    preview.innerHTML = '';
+    preview.replaceChildren();
   }
 
   btnText.addEventListener('click', async () => {
@@ -717,7 +765,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setPreview(text.length > 500 ? text.slice(0, 500) + '…' : text, isMarkdown);
         updateCharCount(text);
       } else {
-        preview.innerHTML = '';
+        preview.replaceChildren();
         updateCharCount('');
       }
     }
