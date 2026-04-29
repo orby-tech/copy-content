@@ -1,0 +1,45 @@
+{
+  "appName": {
+    "message": "Copy Content",
+    "description": "Extension name."
+  },
+  "appDescription": {
+    "message": "किसी पृष्ठ की मुख्य सामग्री (main, article, content) निकालता है और नेविगेशन, साइडबार और बैनर को छोड़ देता है। चार बटन: «टेक्स्ट कॉपी करें» और «मार्कडाउन कॉपी करें» पूरा लेख कॉपी करते हैं; «टेक्स्ट चुनें» और «मार्कडाउन चुनें» किसी भी तत्व पर कर्सर ले जाकर केवल उस भाग को कॉपी करने देते हैं। मार्कडाउन आउटपुट शीर्षक, बोल्ड, इटैलिक, लिंक, सूचियाँ, तालिकाएँ और कोड ब्लॉक संरक्षित रखता है। कोई भी डेटा कहीं नहीं भेजा जाता — सब कुछ क्लिक पर स्थानीय रूप से चलता है।",
+    "description": "Extension store description."
+  },
+  "loading": { "message": "लोड हो रहा है…" },
+  "noContent": { "message": "कोई सामग्री नहीं" },
+  "unknownPage": { "message": "अज्ञात पृष्ठ" },
+  "cannotAccessPage": { "message": "पृष्ठ तक पहुँच नहीं" },
+  "cannotAccessPageDesc": { "message": "इस पृष्ठ तक पहुँच नहीं है।" },
+  "btnCopyText": { "message": "टेक्स्ट कॉपी करें" },
+  "btnCopyMd": { "message": "मार्कडाउन कॉपी करें" },
+  "btnPickText": { "message": "टेक्स्ट चुनें" },
+  "btnPickMd": { "message": "मार्कडाउन चुनें" },
+  "statusTextCopied": {
+    "message": "टेक्स्ट कॉपी हुआ · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k अक्षर" } }
+  },
+  "statusMdCopied": {
+    "message": "मार्कडाउन कॉपी हुआ · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k अक्षर" } }
+  },
+  "statusCopied": {
+    "message": "कॉपी हुआ · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k अक्षर" } }
+  },
+  "statusClickElement": { "message": "पृष्ठ पर किसी तत्व पर क्लिक करें… (रद्द करने के लिए Esc)" },
+  "statusError": {
+    "message": "त्रुटि: $MSG$",
+    "placeholders": { "msg": { "content": "$1" } }
+  },
+  "toastCopyFailed": { "message": "कॉपी विफल" },
+  "charsK": {
+    "message": "$N$k अक्षर",
+    "placeholders": { "n": { "content": "$1", "example": "5.4" } }
+  },
+  "chars": {
+    "message": "$N$ अक्षर",
+    "placeholders": { "n": { "content": "$1", "example": "532" } }
+  }
+}

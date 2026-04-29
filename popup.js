@@ -193,9 +193,21 @@ function extractPageContent(format) {
   }
 }
 
-function pickElementContent(format) {
+function pickElementContent(format, i18n) {
   const HIGHLIGHT_ID = '__copy_content_picker_highlight__';
   const TOAST_ID = '__copy_content_picker_toast__';
+
+  const L = {
+    copied: (i18n && i18n.copied) || 'Copied · __CHARS__',
+    copyFailed: (i18n && i18n.copyFailed) || 'Copy failed',
+    chars: (i18n && i18n.chars) || '__N__ chars',
+    charsK: (i18n && i18n.charsK) || '__N__k chars',
+  };
+
+  function formatChars(n) {
+    if (n >= 1000) return L.charsK.replace('__N__', (n / 1000).toFixed(1));
+    return L.chars.replace('__N__', String(n));
+  }
 
   const cleanup = () => {
     window.removeEventListener('mousemove', onMove, true);
@@ -255,9 +267,9 @@ function pickElementContent(format) {
       const content = extractElementContent(picked, format);
       const copied = tryCopy(content);
       cleanup();
-      const chars = content.length;
-      const charLabel = chars >= 1000 ? `${(chars / 1000).toFixed(1)}k chars` : `${chars} chars`;
-      showToast(copied ? `Copied · ${charLabel}` : 'Copy failed', copied ? 'ok' : 'error');
+      const charLabel = formatChars(content.length);
+      const text = copied ? L.copied.replace('__CHARS__', charLabel) : L.copyFailed;
+      showToast(text, copied ? 'ok' : 'error');
       resolvePromise(content);
     } catch (err) {
       cleanup();
@@ -675,11 +687,26 @@ function showStatus(msg, error) {
   if (msg) setTimeout(() => { el.textContent = ''; }, 2200);
 }
 
+function t(key, ...subs) {
+  return chrome.i18n.getMessage(key, subs.length ? subs : undefined) || key;
+}
+
 function formatCharCount(str) {
   const chars = str ? str.length : 0;
   return chars >= 1000
-    ? `${(chars / 1000).toFixed(1)}k chars`
-    : `${chars} chars`;
+    ? t('charsK', (chars / 1000).toFixed(1))
+    : t('chars', String(chars));
+}
+
+function applyI18n(root) {
+  root.querySelectorAll('[data-i18n]').forEach(el => {
+    const msg = chrome.i18n.getMessage(el.dataset.i18n);
+    if (msg) el.textContent = msg;
+  });
+  root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const msg = chrome.i18n.getMessage(el.dataset.i18nPlaceholder);
+    if (msg) el.dataset.placeholder = msg;
+  });
 }
 
 function updateCharCount(str) {
@@ -692,12 +719,21 @@ async function copyToClipboard(text) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  applyI18n(document);
+
   const btnText = document.getElementById('btn-text');
   const btnMd = document.getElementById('btn-md');
   const btnPickText = document.getElementById('btn-pick-text');
   const btnPickMd = document.getElementById('btn-pick-md');
   const preview = document.getElementById('preview');
   const title = document.getElementById('page-title');
+
+  const pickerI18n = {
+    copied: chrome.i18n.getMessage('statusCopied', ['__CHARS__']),
+    copyFailed: chrome.i18n.getMessage('toastCopyFailed'),
+    chars: chrome.i18n.getMessage('chars', ['__N__']),
+    charsK: chrome.i18n.getMessage('charsK', ['__N__']),
+  };
 
   function setPreview(text, isMarkdown = true) {
     if (!text) { preview.replaceChildren(); return; }
@@ -711,10 +747,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   let tab;
   try {
     tab = await getTab();
-    title.textContent = tab.title || tab.url || 'Unknown page';
+    title.textContent = tab.title || tab.url || t('unknownPage');
   } catch {
-    title.textContent = 'Cannot access page';
-    preview.dataset.placeholder = 'Cannot access this page.';
+    title.textContent = t('cannotAccessPage');
+    preview.dataset.placeholder = t('cannotAccessPageDesc');
     return;
   }
 
@@ -737,9 +773,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       await copyToClipboard(currentContent.text);
       setPreview(currentContent.text, false);
       updateCharCount(currentContent.text);
-      showStatus(`Text copied · ${formatCharCount(currentContent.text)}`);
+      showStatus(t('statusTextCopied', formatCharCount(currentContent.text)));
     } catch (e) {
-      showStatus('Error: ' + e.message, true);
+      showStatus(t('statusError', e.message), true);
     } finally {
       btnText.disabled = false;
     }
@@ -754,9 +790,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       await copyToClipboard(currentContent.markdown);
       setPreview(currentContent.markdown, true);
       updateCharCount(currentContent.markdown);
-      showStatus(`Markdown copied · ${formatCharCount(currentContent.markdown)}`);
+      showStatus(t('statusMdCopied', formatCharCount(currentContent.markdown)));
     } catch (e) {
-      showStatus('Error: ' + e.message, true);
+      showStatus(t('statusError', e.message), true);
     } finally {
       btnMd.disabled = false;
     }
@@ -789,26 +825,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('keydown', onPopupEsc, true);
 
     try {
-      showStatus('Click an element on the page… (Esc to cancel)');
+      showStatus(t('statusClickElement'));
       const results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: pickElementContent,
-        args: [format],
+        args: [format, pickerI18n],
       });
       const picked = results[0]?.result ?? '';
       if (!picked) {
-        showStatus('No content', true);
+        showStatus(t('noContent'), true);
       } else {
         await copyToClipboard(picked);
         setPreview(picked, format === 'markdown');
         updateCharCount(picked);
-        showStatus(`Copied · ${formatCharCount(picked)}`);
+        showStatus(t('statusCopied', formatCharCount(picked)));
       }
     } catch (e) {
       if (e.message?.includes('cancelled')) {
         showStatus('');
       } else {
-        showStatus('Error: ' + e.message, true);
+        showStatus(t('statusError', e.message), true);
       }
     } finally {
       document.removeEventListener('keydown', onPopupEsc, true);

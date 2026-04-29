@@ -1,0 +1,45 @@
+{
+  "appName": {
+    "message": "Copy Content",
+    "description": "Extension name."
+  },
+  "appDescription": {
+    "message": "Extracts the main content of a page (main, article, content) and skips navigation, sidebars, and banners. Four buttons: Copy Text and Copy Markdown copy the whole article; Pick Text and Pick Markdown let you hover over any element and copy just that part. Markdown output preserves headings, bold, italic, links, lists, tables, and code blocks. No data is sent anywhere — everything runs locally on click.",
+    "description": "Extension store description."
+  },
+  "loading": { "message": "Loading…" },
+  "noContent": { "message": "No content" },
+  "unknownPage": { "message": "Unknown page" },
+  "cannotAccessPage": { "message": "Cannot access page" },
+  "cannotAccessPageDesc": { "message": "Cannot access this page." },
+  "btnCopyText": { "message": "Copy Text" },
+  "btnCopyMd": { "message": "Copy Markdown" },
+  "btnPickText": { "message": "Pick Text" },
+  "btnPickMd": { "message": "Pick Markdown" },
+  "statusTextCopied": {
+    "message": "Text copied · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k chars" } }
+  },
+  "statusMdCopied": {
+    "message": "Markdown copied · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k chars" } }
+  },
+  "statusCopied": {
+    "message": "Copied · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k chars" } }
+  },
+  "statusClickElement": { "message": "Click an element on the page… (Esc to cancel)" },
+  "statusError": {
+    "message": "Error: $MSG$",
+    "placeholders": { "msg": { "content": "$1" } }
+  },
+  "toastCopyFailed": { "message": "Copy failed" },
+  "charsK": {
+    "message": "$N$k chars",
+    "placeholders": { "n": { "content": "$1", "example": "5.4" } }
+  },
+  "chars": {
+    "message": "$N$ chars",
+    "placeholders": { "n": { "content": "$1", "example": "532" } }
+  }
+}

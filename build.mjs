@@ -3,6 +3,7 @@ import { execSync } from 'child_process';
 
 mkdirSync('dist', { recursive: true });
 cpSync('icons', 'dist/icons', { recursive: true });
+cpSync('_locales', 'dist/_locales', { recursive: true });
 cpSync('manifest.json', 'dist/manifest.json');
 cpSync('popup.html', 'dist/popup.html');
 cpSync('popup.js', 'dist/popup.js');

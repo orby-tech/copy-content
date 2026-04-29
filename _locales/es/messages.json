@@ -1,0 +1,45 @@
+{
+  "appName": {
+    "message": "Copy Content",
+    "description": "Extension name."
+  },
+  "appDescription": {
+    "message": "Extrae el contenido principal de una página (main, article, content) y omite la navegación, las barras laterales y los banners. Cuatro botones: «Copiar texto» y «Copiar Markdown» copian todo el artículo; «Elegir texto» y «Elegir Markdown» te permiten pasar el cursor sobre cualquier elemento y copiar solo esa parte. La salida en Markdown conserva encabezados, negrita, cursiva, enlaces, listas, tablas y bloques de código. No se envía ningún dato a ninguna parte: todo se ejecuta localmente al hacer clic.",
+    "description": "Extension store description."
+  },
+  "loading": { "message": "Cargando…" },
+  "noContent": { "message": "Sin contenido" },
+  "unknownPage": { "message": "Página desconocida" },
+  "cannotAccessPage": { "message": "No se puede acceder a la página" },
+  "cannotAccessPageDesc": { "message": "No se puede acceder a esta página." },
+  "btnCopyText": { "message": "Copiar texto" },
+  "btnCopyMd": { "message": "Copiar Markdown" },
+  "btnPickText": { "message": "Elegir texto" },
+  "btnPickMd": { "message": "Elegir Markdown" },
+  "statusTextCopied": {
+    "message": "Texto copiado · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k car." } }
+  },
+  "statusMdCopied": {
+    "message": "Markdown copiado · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k car." } }
+  },
+  "statusCopied": {
+    "message": "Copiado · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k car." } }
+  },
+  "statusClickElement": { "message": "Haz clic en un elemento de la página… (Esc para cancelar)" },
+  "statusError": {
+    "message": "Error: $MSG$",
+    "placeholders": { "msg": { "content": "$1" } }
+  },
+  "toastCopyFailed": { "message": "No se pudo copiar" },
+  "charsK": {
+    "message": "$N$k car.",
+    "placeholders": { "n": { "content": "$1", "example": "5.4" } }
+  },
+  "chars": {
+    "message": "$N$ car.",
+    "placeholders": { "n": { "content": "$1", "example": "532" } }
+  }
+}

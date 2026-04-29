@@ -1,0 +1,45 @@
+{
+  "appName": {
+    "message": "Copy Content",
+    "description": "Extension name."
+  },
+  "appDescription": {
+    "message": "Извлекает основное содержимое страницы (main, article, content), пропуская навигацию, боковые панели и баннеры. Четыре кнопки: «Копировать текст» и «Копировать Markdown» забирают статью целиком; «Выбрать текст» и «Выбрать Markdown» позволяют навести курсор на любой элемент и скопировать только его. Markdown сохраняет заголовки, жирный, курсив, ссылки, списки, таблицы и блоки кода. Никакие данные никуда не отправляются — всё работает локально по клику.",
+    "description": "Extension store description."
+  },
+  "loading": { "message": "Загрузка…" },
+  "noContent": { "message": "Нет содержимого" },
+  "unknownPage": { "message": "Неизвестная страница" },
+  "cannotAccessPage": { "message": "Нет доступа к странице" },
+  "cannotAccessPageDesc": { "message": "Нет доступа к этой странице." },
+  "btnCopyText": { "message": "Копировать текст" },
+  "btnCopyMd": { "message": "Копировать Markdown" },
+  "btnPickText": { "message": "Выбрать текст" },
+  "btnPickMd": { "message": "Выбрать Markdown" },
+  "statusTextCopied": {
+    "message": "Текст скопирован · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k симв." } }
+  },
+  "statusMdCopied": {
+    "message": "Markdown скопирован · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k симв." } }
+  },
+  "statusCopied": {
+    "message": "Скопировано · $CHARS$",
+    "placeholders": { "chars": { "content": "$1", "example": "5.4k симв." } }
+  },
+  "statusClickElement": { "message": "Кликните по элементу на странице… (Esc — отмена)" },
+  "statusError": {
+    "message": "Ошибка: $MSG$",
+    "placeholders": { "msg": { "content": "$1" } }
+  },
+  "toastCopyFailed": { "message": "Не удалось скопировать" },
+  "charsK": {
+    "message": "$N$k симв.",
+    "placeholders": { "n": { "content": "$1", "example": "5.4" } }
+  },
+  "chars": {
+    "message": "$N$ симв.",
+    "placeholders": { "n": { "content": "$1", "example": "532" } }
+  }
+}
