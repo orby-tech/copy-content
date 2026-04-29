@@ -255,7 +255,9 @@ function pickElementContent(format) {
       const content = extractElementContent(picked, format);
       const copied = tryCopy(content);
       cleanup();
-      showToast(copied ? 'Copied to clipboard' : 'Copy failed', copied ? 'ok' : 'error');
+      const chars = content.length;
+      const charLabel = chars >= 1000 ? `${(chars / 1000).toFixed(1)}k chars` : `${chars} chars`;
+      showToast(copied ? `Copied · ${charLabel}` : 'Copy failed', copied ? 'ok' : 'error');
       resolvePromise(content);
     } catch (err) {
       cleanup();
@@ -673,13 +675,16 @@ function showStatus(msg, error) {
   if (msg) setTimeout(() => { el.textContent = ''; }, 2200);
 }
 
-function updateCharCount(str) {
-  const el = document.getElementById('char-count');
-  if (!str) { el.textContent = ''; return; }
-  const chars = str.length;
-  el.textContent = chars >= 1000
+function formatCharCount(str) {
+  const chars = str ? str.length : 0;
+  return chars >= 1000
     ? `${(chars / 1000).toFixed(1)}k chars`
     : `${chars} chars`;
+}
+
+function updateCharCount(str) {
+  const el = document.getElementById('char-count');
+  el.textContent = str ? formatCharCount(str) : '';
 }
 
 async function copyToClipboard(text) {
@@ -732,7 +737,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       await copyToClipboard(currentContent.text);
       setPreview(currentContent.text, false);
       updateCharCount(currentContent.text);
-      showStatus('Text copied!');
+      showStatus(`Text copied · ${formatCharCount(currentContent.text)}`);
     } catch (e) {
       showStatus('Error: ' + e.message, true);
     } finally {
@@ -749,7 +754,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       await copyToClipboard(currentContent.markdown);
       setPreview(currentContent.markdown, true);
       updateCharCount(currentContent.markdown);
-      showStatus('Markdown copied!');
+      showStatus(`Markdown copied · ${formatCharCount(currentContent.markdown)}`);
     } catch (e) {
       showStatus('Error: ' + e.message, true);
     } finally {
@@ -797,7 +802,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await copyToClipboard(picked);
         setPreview(picked, format === 'markdown');
         updateCharCount(picked);
-        showStatus('Copied!');
+        showStatus(`Copied · ${formatCharCount(picked)}`);
       }
     } catch (e) {
       if (e.message?.includes('cancelled')) {
