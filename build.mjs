@@ -18,6 +18,7 @@ function buildFor(target) {
   cpSync('popup.js', `${dir}/popup.js`);
   cpSync('extractors.js', `${dir}/extractors.js`);
   cpSync('background.js', `${dir}/background.js`);
+  cpSync('LICENSE', `${dir}/LICENSE`);
 
   const manifest = JSON.parse(readFileSync('manifest.json', 'utf8'));
   if (target === 'firefox') {
