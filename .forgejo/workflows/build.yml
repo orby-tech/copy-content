@@ -1,0 +1,59 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: docker
+    container:
+      image: code.forgejo.org/oci/node:20-bookworm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install zip
+        run: apt-get update && apt-get install -y --no-install-recommends zip
+
+      - name: Build (Chrome + Firefox)
+        run: node build.mjs
+
+      - name: Lint Firefox build
+        run: npx --yes web-ext lint --source-dir=dist-firefox --self-hosted
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: copy-content-zips
+          path: |
+            copy-content-chrome.zip
+            copy-content-firefox.zip
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: docker
+    container:
+      image: code.forgejo.org/oci/node:20-bookworm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: copy-content-zips
+          path: .
+
+      - name: Publish release
+        uses: https://code.forgejo.org/actions/forgejo-release@v2
+        with:
+          direction: upload
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          release-dir: .
+          release-notes: 'Release ${{ github.ref_name }} — see commit log for changes.'
+          override: true
