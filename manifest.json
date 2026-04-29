@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Copy Content",
+  "version": "1.1",
+  "description": "Extracts the main content of a page (main, article, content) and skips navigation, sidebars, and banners. Four buttons: Copy Text and Copy Markdown copy the whole article; Pick Text and Pick Markdown let you hover over any element and copy just that part. Markdown output preserves headings, bold, italic, links, lists, tables, and code blocks. No data is sent anywhere — everything runs locally on click.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Copy Content",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": ["activeTab", "scripting", "clipboardWrite"]
+}
