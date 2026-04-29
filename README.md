@@ -28,3 +28,13 @@ Chrome/Edge extension: copy page content as plain text or Markdown.
 **Chrome:** [Developer Dashboard](https://chrome.google.com/webstore/devconsole) — one-time $5, pack folder to ZIP, upload. Store listing needs description, 128px icon, optional 440×280 promo image.
 
 **Firefox:** [addons.mozilla.org](https://addons.mozilla.org) — same code, upload ZIP or folder.
+
+## Development
+
+After cloning, enable the auto-version-bump hook:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+On every commit, the patch segment of `manifest.json` `version` is incremented (e.g. `1.2` → `1.2.1` → `1.2.2`). To set a major/minor manually, edit `manifest.json` and stage it — the hook detects manual version changes and skips the bump.

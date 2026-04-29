@@ -1,0 +1,25 @@
+#!/bin/sh
+set -e
+
+[ -f .git/MERGE_HEAD ] && exit 0
+
+MANIFEST="manifest.json"
+[ -f "$MANIFEST" ] || exit 0
+
+if git diff --cached -- "$MANIFEST" | grep -qE '^[+-][[:space:]]*"version"'; then
+  exit 0
+fi
+
+current=$(sed -nE 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/p' "$MANIFEST" | head -1)
+[ -n "$current" ] || exit 0
+
+new=$(echo "$current" | awk -F. 'BEGIN{OFS="."} {
+  while (NF < 3) { NF++; $NF = 0 }
+  $3 = $3 + 1
+  NF = 3
+  print
+}')
+
+sed -i -E "s/(\"version\"[[:space:]]*:[[:space:]]*\")[^\"]+(\")/\1${new}\2/" "$MANIFEST"
+git add "$MANIFEST"
+echo "pre-commit: manifest version $current → $new"
