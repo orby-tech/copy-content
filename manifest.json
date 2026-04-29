@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "__MSG_appDescription__",
   "default_locale": "en",
   "author": "Timur Bondarenko",
@@ -28,7 +28,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "copy-content@orby-tech.space",
-      "strict_min_version": "121.0",
+      "strict_min_version": "142.0",
       "data_collection_permissions": {
         "required": ["none"]
       }
