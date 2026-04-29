@@ -16,6 +16,7 @@
   "btnCopyMd": { "message": "मार्कडाउन कॉपी करें" },
   "btnPickText": { "message": "टेक्स्ट चुनें" },
   "btnPickMd": { "message": "मार्कडाउन चुनें" },
+  "btnSupport": { "message": "सहायता" },
   "statusTextCopied": {
     "message": "टेक्स्ट कॉपी हुआ · $CHARS$",
     "placeholders": { "chars": { "content": "$1", "example": "5.4k अक्षर" } }

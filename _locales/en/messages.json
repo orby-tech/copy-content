@@ -16,6 +16,7 @@
   "btnCopyMd": { "message": "Copy Markdown" },
   "btnPickText": { "message": "Pick Text" },
   "btnPickMd": { "message": "Pick Markdown" },
+  "btnSupport": { "message": "Support" },
   "statusTextCopied": {
     "message": "Text copied · $CHARS$",
     "placeholders": { "chars": { "content": "$1", "example": "5.4k chars" } }
