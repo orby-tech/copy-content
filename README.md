@@ -7,7 +7,7 @@
 **Copy the main content of any web page as plain text or Markdown — in one click, fully offline.**
 
 [![Version](https://img.shields.io/badge/version-1.2.8-blue.svg)](manifest.json)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Chrome Web Store](https://img.shields.io/badge/Chrome-Web%20Store-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/pakjdpbidgcahcchgnggfmjegbfnemoj)
 [![Firefox Add-ons](https://img.shields.io/badge/Firefox-Add--ons-FF7139?logo=firefox&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/copy-content/)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-orange.svg)](manifest.json)
@@ -135,4 +135,4 @@ To add a new locale, copy `_locales/en/` to `_locales/<code>/` and translate the
 
 ## 📄 License
 
-Released under the [MIT License](LICENSE) © Timur Bondarenko.
+Released under the [Apache License 2.0](LICENSE) © Timur Bondarenko.
