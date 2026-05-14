@@ -1,6 +1,19 @@
 // Shared by popup.js and background.js. Functions are passed to chrome.scripting.executeScript
 // (so they must remain self-contained) and called inside the page context.
 
+// Prepend a page title + URL block to extracted content. Runs in popup/background
+// context (not page context), so it does not need to be self-contained.
+function prependTitleUrl(content, title, url, format) {
+  const t = (title || '').trim();
+  const u = (url || '').trim();
+  if (!u) return content;
+  const header = format === 'markdown'
+    ? `[${t || u}](${u})`
+    : (t ? `${t}\n${u}` : u);
+  if (!content) return header;
+  return `${header}\n\n${content}`;
+}
+
 function extractPageContent(format) {
   const CONTENT_SELECTORS = [
     'main', 'article', '[role="main"]',
@@ -506,4 +519,9 @@ function pickElementContent(format, i18n, colors) {
     resolvePromise = resolve;
     rejectPromise = reject;
   });
+}
+
+// CommonJS export for node:test runner. Browser ignores this branch.
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { prependTitleUrl };
 }

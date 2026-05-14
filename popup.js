@@ -1,6 +1,24 @@
-// extractPageContent and pickElementContent are defined in extractors.js
-// (loaded before this script via popup.html). Both run inside the page
-// context when injected via chrome.scripting.executeScript.
+// extractPageContent, pickElementContent and prependTitleUrl are defined in
+// extractors.js (loaded before this script via popup.html). The first two run
+// inside the page context when injected via chrome.scripting.executeScript;
+// prependTitleUrl runs in the popup context only.
+
+const SETTINGS_KEY = 'includeTitleUrl';
+
+async function loadIncludeTitleUrl() {
+  try {
+    const data = await chrome.storage.sync.get(SETTINGS_KEY);
+    return Boolean(data[SETTINGS_KEY]);
+  } catch {
+    return false;
+  }
+}
+
+async function saveIncludeTitleUrl(value) {
+  try {
+    await chrome.storage.sync.set({ [SETTINGS_KEY]: Boolean(value) });
+  } catch { }
+}
 
 // ── Markdown renderer ────────────────────────────────────────────────────────
 
@@ -200,8 +218,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnMd = document.getElementById('btn-md');
   const btnPickText = document.getElementById('btn-pick-text');
   const btnPickMd = document.getElementById('btn-pick-md');
+  const optIncludeTitleUrl = document.getElementById('opt-include-title-url');
   const preview = document.getElementById('preview');
   const title = document.getElementById('page-title');
+
+  let includeTitleUrl = await loadIncludeTitleUrl();
+  optIncludeTitleUrl.checked = includeTitleUrl;
+
+  function withMeta(content, format) {
+    if (!includeTitleUrl || !tab) return content;
+    return prependTitleUrl(content, tab.title, tab.url, format);
+  }
 
   const pickerI18n = {
     copied: chrome.i18n.getMessage('statusCopied', ['__CHARS__']),
@@ -229,12 +256,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  function refreshPreview() {
+    const md = currentContent.markdown;
+    if (md == null) return;
+    const display = withMeta(md, 'markdown');
+    setPreview(display, true);
+    updateCharCount(display);
+  }
+
+  optIncludeTitleUrl.addEventListener('change', async () => {
+    includeTitleUrl = optIncludeTitleUrl.checked;
+    await saveIncludeTitleUrl(includeTitleUrl);
+    refreshPreview();
+  });
+
   // Load markdown preview on open
   try {
     const md = await runExtract(tab, 'markdown');
     currentContent.markdown = md;
-    setPreview(md, true);
-    updateCharCount(md);
+    refreshPreview();
   } catch (e) {
     preview.replaceChildren();
   }
@@ -245,10 +285,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!currentContent.text) {
         currentContent.text = await runExtract(tab, 'text');
       }
-      await copyToClipboard(currentContent.text);
-      setPreview(currentContent.text, false);
-      updateCharCount(currentContent.text);
-      showStatus(t('statusTextCopied', formatCharCount(currentContent.text)));
+      const out = withMeta(currentContent.text, 'text');
+      await copyToClipboard(out);
+      setPreview(out, false);
+      updateCharCount(out);
+      showStatus(t('statusTextCopied', formatCharCount(out)));
     } catch (e) {
       showStatus(t('statusError', e.message), true);
     } finally {
@@ -262,10 +303,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!currentContent.markdown) {
         currentContent.markdown = await runExtract(tab, 'markdown');
       }
-      await copyToClipboard(currentContent.markdown);
-      setPreview(currentContent.markdown, true);
-      updateCharCount(currentContent.markdown);
-      showStatus(t('statusMdCopied', formatCharCount(currentContent.markdown)));
+      const out = withMeta(currentContent.markdown, 'markdown');
+      await copyToClipboard(out);
+      setPreview(out, true);
+      updateCharCount(out);
+      showStatus(t('statusMdCopied', formatCharCount(out)));
     } catch (e) {
       showStatus(t('statusError', e.message), true);
     } finally {
@@ -314,10 +356,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!picked) {
         showStatus(t('noContent'), true);
       } else {
-        await copyToClipboard(picked);
-        setPreview(picked, format === 'markdown');
-        updateCharCount(picked);
-        showStatus(t('statusCopied', formatCharCount(picked)));
+        const out = withMeta(picked, format);
+        await copyToClipboard(out);
+        setPreview(out, format === 'markdown');
+        updateCharCount(out);
+        showStatus(t('statusCopied', formatCharCount(out)));
       }
     } catch (e) {
       if (e.message?.includes('cancelled')) {
