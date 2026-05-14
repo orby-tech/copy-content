@@ -24,7 +24,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["activeTab", "scripting", "clipboardWrite", "contextMenus"],
+  "permissions": ["activeTab", "scripting", "clipboardWrite", "contextMenus", "storage"],
   "browser_specific_settings": {
     "gecko": {
       "id": "copy-content@bzic-tools.com",

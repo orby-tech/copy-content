@@ -17,6 +17,7 @@
   "btnPickText": { "message": "Elegir texto" },
   "btnPickMd": { "message": "Elegir Markdown" },
   "btnSupport": { "message": "Soporte" },
+  "optIncludeTitleUrl": { "message": "Incluir título y URL de la página" },
   "menuCopyText": { "message": "Copy Content: Copiar texto" },
   "menuCopyMd": { "message": "Copy Content: Copiar Markdown" },
   "menuPickText": { "message": "Copy Content: Elegir texto" },

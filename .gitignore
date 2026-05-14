@@ -4,3 +4,4 @@ copy-content-firefox.zip
 dist/
 dist-chrome/
 dist-firefox/
+.plane-cache.json

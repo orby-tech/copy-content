@@ -17,6 +17,7 @@
   "btnPickText": { "message": "Pick Text" },
   "btnPickMd": { "message": "Pick Markdown" },
   "btnSupport": { "message": "Support" },
+  "optIncludeTitleUrl": { "message": "Include page title and URL" },
   "menuCopyText": { "message": "Copy Content: Copy Text" },
   "menuCopyMd": { "message": "Copy Content: Copy Markdown" },
   "menuPickText": { "message": "Copy Content: Pick Text" },
