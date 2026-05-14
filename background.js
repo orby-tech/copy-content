@@ -1,6 +1,14 @@
-// Chrome service worker imports the extractors; Firefox loads them via manifest.scripts.
-if (typeof importScripts === 'function' && typeof extractPageContent === 'undefined') {
-  try { importScripts('toast.js', 'extractors.js'); } catch { }
+// Chrome service worker imports shared modules; Firefox loads them via manifest.scripts.
+if (typeof importScripts === 'function') {
+  if (typeof COLORS === 'undefined') {
+    try { importScripts('colors.js'); } catch { }
+  }
+  if (typeof createCopyContentToast === 'undefined') {
+    try { importScripts('toast.js'); } catch { }
+  }
+  if (typeof extractPageContent === 'undefined') {
+    try { importScripts('extractors.js'); } catch { }
+  }
 }
 
 const SETTINGS_KEY = 'includeTitleUrl';
@@ -129,7 +137,7 @@ async function runPick(tab, format) {
     const results = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: pickElementContent,
-      args: [format, pickerI18n],
+      args: [format, pickerI18n, COLORS],
     });
     picked = results[0]?.result ?? '';
   } catch {

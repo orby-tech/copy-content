@@ -202,7 +202,7 @@ function extractPageContent(format) {
   }
 }
 
-function pickElementContent(format, i18n) {
+function pickElementContent(format, i18n, colors) {
   const HIGHLIGHT_ID = '__copy_content_picker_highlight__';
   const TOAST_ID = '__copy_content_picker_toast__';
 
@@ -211,6 +211,15 @@ function pickElementContent(format, i18n) {
     copyFailed: (i18n && i18n.copyFailed) || 'Copy failed',
     chars: (i18n && i18n.chars) || '__N__ chars',
     charsK: (i18n && i18n.charsK) || '__N__k chars',
+  };
+
+  const C = colors || {
+    success: 'rgba(22, 163, 74, 0.92)',
+    error: 'rgba(220, 38, 38, 0.92)',
+    highlightBorder: '#1a73e8',
+    highlightFill: 'rgba(26, 115, 232, 0.08)',
+    toastText: '#fff',
+    toastShadow: 'rgba(0, 0, 0, 0.25)',
   };
 
   function formatChars(n) {
@@ -237,8 +246,8 @@ function pickElementContent(format, i18n) {
       el.style.position = 'fixed';
       el.style.zIndex = '2147483647';
       el.style.pointerEvents = 'none';
-      el.style.border = '2px solid #1a73e8';
-      el.style.background = 'rgba(26, 115, 232, 0.08)';
+      el.style.border = `2px solid ${C.highlightBorder}`;
+      el.style.background = C.highlightFill;
       el.style.borderRadius = '4px';
       document.documentElement.appendChild(el);
     }

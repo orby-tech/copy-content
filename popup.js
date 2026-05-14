@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: pickElementContent,
-        args: [format, pickerI18n],
+        args: [format, pickerI18n, COLORS],
       });
       const picked = results[0]?.result ?? '';
       if (!picked) {
