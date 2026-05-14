@@ -1,6 +1,11 @@
-// Chrome service worker imports the extractors; Firefox loads them via manifest.scripts.
-if (typeof importScripts === 'function' && typeof extractPageContent === 'undefined') {
-  try { importScripts('extractors.js'); } catch { }
+// Chrome service worker imports shared modules; Firefox loads them via manifest.scripts.
+if (typeof importScripts === 'function') {
+  if (typeof COLORS === 'undefined') {
+    try { importScripts('colors.js'); } catch { }
+  }
+  if (typeof extractPageContent === 'undefined') {
+    try { importScripts('extractors.js'); } catch { }
+  }
 }
 
 const MENU_ITEMS = [
@@ -50,7 +55,7 @@ function copyTextInPage(text) {
   }
 }
 
-function showToastInPage(text, kind) {
+function showToastInPage(text, kind, colors) {
   const TOAST_ID = '__copy_content_picker_toast__';
   let el = document.getElementById(TOAST_ID);
   if (!el) {
@@ -63,17 +68,15 @@ function showToastInPage(text, kind) {
     el.style.transform = 'translateX(-50%)';
     el.style.padding = '10px 12px';
     el.style.borderRadius = '10px';
-    el.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.25)';
-    el.style.color = '#fff';
+    el.style.boxShadow = `0 8px 24px ${colors.toastShadow}`;
+    el.style.color = colors.toastText;
     el.style.font = '13px system-ui, -apple-system, sans-serif';
     el.style.fontWeight = '600';
     el.style.letterSpacing = '0.2px';
     el.style.pointerEvents = 'none';
     document.documentElement.appendChild(el);
   }
-  el.style.background = kind === 'error'
-    ? 'rgba(220, 38, 38, 0.92)'
-    : 'rgba(22, 163, 74, 0.92)';
+  el.style.background = kind === 'error' ? colors.error : colors.success;
   el.textContent = text;
   setTimeout(() => { try { el.remove(); } catch { } }, 2000);
 }
@@ -93,7 +96,7 @@ async function runCopyWholePage(tab, format) {
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: showToastInPage,
-      args: [chrome.i18n.getMessage('noContent') || 'No content', 'error'],
+      args: [chrome.i18n.getMessage('noContent') || 'No content', 'error', COLORS],
     });
     return;
   }
@@ -116,7 +119,7 @@ async function runCopyWholePage(tab, format) {
   await chrome.scripting.executeScript({
     target: { tabId: tab.id },
     func: showToastInPage,
-    args: [copied ? okMsg : failMsg, copied ? 'ok' : 'error'],
+    args: [copied ? okMsg : failMsg, copied ? 'ok' : 'error', COLORS],
   });
 }
 
@@ -131,7 +134,7 @@ async function runPick(tab, format) {
   await chrome.scripting.executeScript({
     target: { tabId: tab.id },
     func: pickElementContent,
-    args: [format, pickerI18n],
+    args: [format, pickerI18n, COLORS],
   });
 }
 

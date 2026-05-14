@@ -4,6 +4,15 @@
 <head>
   <meta charset="utf-8">
   <style>
+    :root {
+      --color-success: rgba(22, 163, 74, 0.92);
+      --color-error: rgba(220, 38, 38, 0.92);
+      --color-highlight-border: #1a73e8;
+      --color-highlight-fill: rgba(26, 115, 232, 0.08);
+      --color-toast-text: #fff;
+      --color-toast-shadow: rgba(0, 0, 0, 0.25);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -53,9 +62,9 @@
     }
 
     button.primary {
-      background: #1a73e8;
-      color: #fff;
-      border-color: #1a73e8;
+      background: var(--color-highlight-border);
+      color: var(--color-toast-text);
+      border-color: var(--color-highlight-border);
     }
 
     button.primary:hover {
@@ -129,7 +138,7 @@
       margin: 5px 0;
     }
 
-    #preview a { color: #1a73e8; text-decoration: none; }
+    #preview a { color: var(--color-highlight-border); text-decoration: none; }
     #preview img { max-width: 100%; }
 
     .footer {
@@ -142,7 +151,7 @@
 
     .status {
       font-size: 12px;
-      color: #1a73e8;
+      color: var(--color-highlight-border);
       font-weight: 500;
     }
 
@@ -201,6 +210,7 @@
     <span data-i18n="btnSupport">Support</span>
   </a>
 
+  <script src="colors.js"></script>
   <script src="extractors.js"></script>
   <script src="popup.js"></script>
 </body>

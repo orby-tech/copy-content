@@ -189,7 +189,7 @@ function extractPageContent(format) {
   }
 }
 
-function pickElementContent(format, i18n) {
+function pickElementContent(format, i18n, colors) {
   const HIGHLIGHT_ID = '__copy_content_picker_highlight__';
   const TOAST_ID = '__copy_content_picker_toast__';
 
@@ -198,6 +198,15 @@ function pickElementContent(format, i18n) {
     copyFailed: (i18n && i18n.copyFailed) || 'Copy failed',
     chars: (i18n && i18n.chars) || '__N__ chars',
     charsK: (i18n && i18n.charsK) || '__N__k chars',
+  };
+
+  const C = colors || {
+    success: 'rgba(22, 163, 74, 0.92)',
+    error: 'rgba(220, 38, 38, 0.92)',
+    highlightBorder: '#1a73e8',
+    highlightFill: 'rgba(26, 115, 232, 0.08)',
+    toastText: '#fff',
+    toastShadow: 'rgba(0, 0, 0, 0.25)',
   };
 
   function formatChars(n) {
@@ -224,8 +233,8 @@ function pickElementContent(format, i18n) {
       el.style.position = 'fixed';
       el.style.zIndex = '2147483647';
       el.style.pointerEvents = 'none';
-      el.style.border = '2px solid #1a73e8';
-      el.style.background = 'rgba(26, 115, 232, 0.08)';
+      el.style.border = `2px solid ${C.highlightBorder}`;
+      el.style.background = C.highlightFill;
       el.style.borderRadius = '4px';
       document.documentElement.appendChild(el);
     }
@@ -293,8 +302,8 @@ function pickElementContent(format, i18n) {
       el.style.transform = 'translateX(-50%)';
       el.style.padding = '10px 12px';
       el.style.borderRadius = '10px';
-      el.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.25)';
-      el.style.color = '#fff';
+      el.style.boxShadow = `0 8px 24px ${C.toastShadow}`;
+      el.style.color = C.toastText;
       el.style.font = '13px system-ui, -apple-system, sans-serif';
       el.style.fontWeight = '600';
       el.style.letterSpacing = '0.2px';
@@ -302,7 +311,7 @@ function pickElementContent(format, i18n) {
       document.documentElement.appendChild(el);
     }
     const isOk = kind !== 'error';
-    el.style.background = isOk ? 'rgba(22, 163, 74, 0.92)' : 'rgba(220, 38, 38, 0.92)';
+    el.style.background = isOk ? C.success : C.error;
     el.textContent = text;
     setTimeout(() => { try { el.remove(); } catch { } }, 2000);
   }
