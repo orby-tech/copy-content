@@ -16,13 +16,14 @@ function buildFor(target) {
   cpSync('_locales', `${dir}/_locales`, { recursive: true });
   cpSync('popup.html', `${dir}/popup.html`);
   cpSync('popup.js', `${dir}/popup.js`);
+  cpSync('toast.js', `${dir}/toast.js`);
   cpSync('extractors.js', `${dir}/extractors.js`);
   cpSync('background.js', `${dir}/background.js`);
   cpSync('LICENSE', `${dir}/LICENSE`);
 
   const manifest = JSON.parse(readFileSync('manifest.json', 'utf8'));
   if (target === 'firefox') {
-    manifest.background = { scripts: ['extractors.js', 'background.js'] };
+    manifest.background = { scripts: ['toast.js', 'extractors.js', 'background.js'] };
   }
   writeFileSync(`${dir}/manifest.json`, JSON.stringify(manifest, null, 2));
 

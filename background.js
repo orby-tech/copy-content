@@ -1,6 +1,6 @@
 // Chrome service worker imports the extractors; Firefox loads them via manifest.scripts.
 if (typeof importScripts === 'function' && typeof extractPageContent === 'undefined') {
-  try { importScripts('extractors.js'); } catch { }
+  try { importScripts('toast.js', 'extractors.js'); } catch { }
 }
 
 const SETTINGS_KEY = 'includeTitleUrl';
@@ -61,32 +61,16 @@ function copyTextInPage(text) {
   }
 }
 
-function showToastInPage(text, kind) {
-  const TOAST_ID = '__copy_content_picker_toast__';
-  let el = document.getElementById(TOAST_ID);
-  if (!el) {
-    el = document.createElement('div');
-    el.id = TOAST_ID;
-    el.style.position = 'fixed';
-    el.style.zIndex = '2147483647';
-    el.style.left = '50%';
-    el.style.top = '16px';
-    el.style.transform = 'translateX(-50%)';
-    el.style.padding = '10px 12px';
-    el.style.borderRadius = '10px';
-    el.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.25)';
-    el.style.color = '#fff';
-    el.style.font = '13px system-ui, -apple-system, sans-serif';
-    el.style.fontWeight = '600';
-    el.style.letterSpacing = '0.2px';
-    el.style.pointerEvents = 'none';
-    document.documentElement.appendChild(el);
-  }
-  el.style.background = kind === 'error'
-    ? 'rgba(220, 38, 38, 0.92)'
-    : 'rgba(22, 163, 74, 0.92)';
-  el.textContent = text;
-  setTimeout(() => { try { el.remove(); } catch { } }, 2000);
+async function showToast(tabId, text, kind) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ['toast.js'],
+  });
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    func: (t, k) => createCopyContentToast(t, k),
+    args: [text, kind],
+  });
 }
 
 async function runCopyWholePage(tab, format) {
@@ -105,11 +89,7 @@ async function runCopyWholePage(tab, format) {
   }
 
   if (!text) {
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: showToastInPage,
-      args: [chrome.i18n.getMessage('noContent') || 'No content', 'error'],
-    });
+    await showToast(tab.id, chrome.i18n.getMessage('noContent') || 'No content', 'error');
     return;
   }
 
@@ -128,11 +108,7 @@ async function runCopyWholePage(tab, format) {
     : (chrome.i18n.getMessage('statusMdCopied', [charLabel]) || `Markdown copied · ${charLabel}`);
   const failMsg = chrome.i18n.getMessage('toastCopyFailed') || 'Copy failed';
 
-  await chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    func: showToastInPage,
-    args: [copied ? okMsg : failMsg, copied ? 'ok' : 'error'],
-  });
+  await showToast(tab.id, copied ? okMsg : failMsg, copied ? 'ok' : 'error');
 }
 
 async function runPick(tab, format) {
@@ -142,6 +118,11 @@ async function runPick(tab, format) {
     chars: chrome.i18n.getMessage('chars', ['__N__']) || '__N__ chars',
     charsK: chrome.i18n.getMessage('charsK', ['__N__']) || '__N__k chars',
   };
+
+  await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ['toast.js'],
+  });
 
   let picked = '';
   try {
