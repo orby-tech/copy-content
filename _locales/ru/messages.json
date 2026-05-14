@@ -17,6 +17,7 @@
   "btnPickText": { "message": "Выбрать текст" },
   "btnPickMd": { "message": "Выбрать Markdown" },
   "btnSupport": { "message": "Поддержка" },
+  "optIncludeTitleUrl": { "message": "Добавлять заголовок и URL страницы" },
   "menuCopyText": { "message": "Copy Content: Копировать текст" },
   "menuCopyMd": { "message": "Copy Content: Копировать Markdown" },
   "menuPickText": { "message": "Copy Content: Выбрать текст" },

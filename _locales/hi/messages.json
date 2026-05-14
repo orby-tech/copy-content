@@ -17,6 +17,7 @@
   "btnPickText": { "message": "टेक्स्ट चुनें" },
   "btnPickMd": { "message": "मार्कडाउन चुनें" },
   "btnSupport": { "message": "सहायता" },
+  "optIncludeTitleUrl": { "message": "पृष्ठ का शीर्षक और URL जोड़ें" },
   "menuCopyText": { "message": "Copy Content: टेक्स्ट कॉपी करें" },
   "menuCopyMd": { "message": "Copy Content: मार्कडाउन कॉपी करें" },
   "menuPickText": { "message": "Copy Content: टेक्स्ट चुनें" },

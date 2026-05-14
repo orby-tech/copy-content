@@ -3,6 +3,17 @@ if (typeof importScripts === 'function' && typeof extractPageContent === 'undefi
   try { importScripts('toast.js', 'extractors.js'); } catch { }
 }
 
+const SETTINGS_KEY = 'includeTitleUrl';
+
+async function shouldIncludeTitleUrl() {
+  try {
+    const data = await chrome.storage.sync.get(SETTINGS_KEY);
+    return Boolean(data[SETTINGS_KEY]);
+  } catch {
+    return false;
+  }
+}
+
 const MENU_ITEMS = [
   { id: 'copy-text',    msg: 'menuCopyText'   },
   { id: 'copy-md',      msg: 'menuCopyMd'     },
@@ -68,10 +79,14 @@ async function runCopyWholePage(tab, format) {
     func: extractPageContent,
     args: [format],
   });
-  const text = results
+  let text = results
     .map(r => (typeof r.result === 'string' ? r.result : ''))
     .map(s => s.trim())
     .sort((a, b) => b.length - a.length)[0] || '';
+
+  if (text && await shouldIncludeTitleUrl()) {
+    text = prependTitleUrl(text, tab.title, tab.url, format);
+  }
 
   if (!text) {
     await showToast(tab.id, chrome.i18n.getMessage('noContent') || 'No content', 'error');
@@ -108,10 +123,26 @@ async function runPick(tab, format) {
     target: { tabId: tab.id },
     files: ['toast.js'],
   });
+
+  let picked = '';
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: pickElementContent,
+      args: [format, pickerI18n],
+    });
+    picked = results[0]?.result ?? '';
+  } catch {
+    return;
+  }
+
+  if (!picked || !(await shouldIncludeTitleUrl())) return;
+
+  const out = prependTitleUrl(picked, tab.title, tab.url, format);
   await chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    func: pickElementContent,
-    args: [format, pickerI18n],
+    func: copyTextInPage,
+    args: [out],
   });
 }
 

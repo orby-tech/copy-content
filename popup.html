@@ -169,6 +169,32 @@
     .support-link svg {
       flex-shrink: 0;
     }
+
+    .settings {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 8px 0 4px;
+      padding: 8px 10px;
+      border: 1px solid #ececec;
+      border-radius: 6px;
+      background: #fafafa;
+    }
+
+    .settings label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #444;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .settings input[type="checkbox"] {
+      margin: 0;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -186,6 +212,13 @@
   </div>
 
   <div id="preview" data-i18n-placeholder="noContent" data-placeholder="No content"></div>
+
+  <div class="settings">
+    <label>
+      <input type="checkbox" id="opt-include-title-url">
+      <span data-i18n="optIncludeTitleUrl">Include page title and URL</span>
+    </label>
+  </div>
 
   <div class="footer">
     <span class="status" id="status"></span>
