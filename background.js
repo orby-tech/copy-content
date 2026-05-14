@@ -3,6 +3,9 @@ if (typeof importScripts === 'function') {
   if (typeof COLORS === 'undefined') {
     try { importScripts('colors.js'); } catch { }
   }
+  if (typeof createCopyContentToast === 'undefined') {
+    try { importScripts('toast.js'); } catch { }
+  }
   if (typeof extractPageContent === 'undefined') {
     try { importScripts('extractors.js'); } catch { }
   }
@@ -55,30 +58,16 @@ function copyTextInPage(text) {
   }
 }
 
-function showToastInPage(text, kind, colors) {
-  const TOAST_ID = '__copy_content_picker_toast__';
-  let el = document.getElementById(TOAST_ID);
-  if (!el) {
-    el = document.createElement('div');
-    el.id = TOAST_ID;
-    el.style.position = 'fixed';
-    el.style.zIndex = '2147483647';
-    el.style.left = '50%';
-    el.style.top = '16px';
-    el.style.transform = 'translateX(-50%)';
-    el.style.padding = '10px 12px';
-    el.style.borderRadius = '10px';
-    el.style.boxShadow = `0 8px 24px ${colors.toastShadow}`;
-    el.style.color = colors.toastText;
-    el.style.font = '13px system-ui, -apple-system, sans-serif';
-    el.style.fontWeight = '600';
-    el.style.letterSpacing = '0.2px';
-    el.style.pointerEvents = 'none';
-    document.documentElement.appendChild(el);
-  }
-  el.style.background = kind === 'error' ? colors.error : colors.success;
-  el.textContent = text;
-  setTimeout(() => { try { el.remove(); } catch { } }, 2000);
+async function showToast(tabId, text, kind) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ['toast.js'],
+  });
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    func: (t, k) => createCopyContentToast(t, k),
+    args: [text, kind],
+  });
 }
 
 async function runCopyWholePage(tab, format) {
@@ -93,11 +82,7 @@ async function runCopyWholePage(tab, format) {
     .sort((a, b) => b.length - a.length)[0] || '';
 
   if (!text) {
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: showToastInPage,
-      args: [chrome.i18n.getMessage('noContent') || 'No content', 'error', COLORS],
-    });
+    await showToast(tab.id, chrome.i18n.getMessage('noContent') || 'No content', 'error');
     return;
   }
 
@@ -116,11 +101,7 @@ async function runCopyWholePage(tab, format) {
     : (chrome.i18n.getMessage('statusMdCopied', [charLabel]) || `Markdown copied · ${charLabel}`);
   const failMsg = chrome.i18n.getMessage('toastCopyFailed') || 'Copy failed';
 
-  await chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    func: showToastInPage,
-    args: [copied ? okMsg : failMsg, copied ? 'ok' : 'error', COLORS],
-  });
+  await showToast(tab.id, copied ? okMsg : failMsg, copied ? 'ok' : 'error');
 }
 
 async function runPick(tab, format) {
@@ -131,6 +112,10 @@ async function runPick(tab, format) {
     charsK: chrome.i18n.getMessage('charsK', ['__N__']) || '__N__k chars',
   };
 
+  await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ['toast.js'],
+  });
   await chrome.scripting.executeScript({
     target: { tabId: tab.id },
     func: pickElementContent,

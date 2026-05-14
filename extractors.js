@@ -291,29 +291,7 @@ function pickElementContent(format, i18n, colors) {
   }
 
   function showToast(text, kind) {
-    let el = document.getElementById(TOAST_ID);
-    if (!el) {
-      el = document.createElement('div');
-      el.id = TOAST_ID;
-      el.style.position = 'fixed';
-      el.style.zIndex = '2147483647';
-      el.style.left = '50%';
-      el.style.top = '16px';
-      el.style.transform = 'translateX(-50%)';
-      el.style.padding = '10px 12px';
-      el.style.borderRadius = '10px';
-      el.style.boxShadow = `0 8px 24px ${C.toastShadow}`;
-      el.style.color = C.toastText;
-      el.style.font = '13px system-ui, -apple-system, sans-serif';
-      el.style.fontWeight = '600';
-      el.style.letterSpacing = '0.2px';
-      el.style.pointerEvents = 'none';
-      document.documentElement.appendChild(el);
-    }
-    const isOk = kind !== 'error';
-    el.style.background = isOk ? C.success : C.error;
-    el.textContent = text;
-    setTimeout(() => { try { el.remove(); } catch { } }, 2000);
+    createCopyContentToast(text, kind);
   }
 
   function tryCopy(text) {

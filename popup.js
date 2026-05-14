@@ -301,6 +301,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       showStatus(t('statusClickElement'));
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['toast.js'],
+      });
       const results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: pickElementContent,
